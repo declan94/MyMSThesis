@@ -1,0 +1,30 @@
+% !Mode:: "TeX:UTF-8"
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
+
+\begin{denotation}[3cm]
+\item[$I$]  视频中的图像帧
+\item[$param_1$]  Hough圆检测的Canny算子阈值参数
+\item[$param_2$]  Hough圆检测的累加器阈值参数
+\item[$A$]  图像坐标系向理想坐标系的变换矩阵
+\item[$B$]  理想坐标系向图像坐标系的变换矩阵
+\item[$\textrm{M}_1$] 简单单高斯背景模型
+\item[$\textrm{M}_2$] 果蝇活动台的精确背景模型
+\item[$\mu$]    背景模型$\textrm{M}_1$中视频帧的均值
+\item[$\sigma^2$]   背景模型$\textrm{M}_1$中视频帧的方差
+\item[$\alpha$] $\textrm{M}_1$中视频帧的亮度畸变
+\item[$\textrm{RMS}(\alpha)$] $\textrm{M}_1$中视频亮度畸变的均方差
+\item[$\mu'$]   背景模型$\textrm{M}_2$中活动台的均值
+\item[$\sigma^{\prime 2}$] 背景模型$\textrm{M}_2$中活动台的方差
+\item[$\alpha'$] $\textrm{M}_2$中视频帧的亮度畸变
+\item[$\textrm{RMS}(\alpha')$] $\textrm{M}_2$中视频亮度畸变的均方差
+\item[$I_{body}$]    果蝇身体的二值图像
+\item[$I_{wing}$]    果蝇翅膀的二值图像
+\item[$\tau_{body}$] 提取果蝇身体的阈值
+\item[$\tau_{wing}$] 提取果蝇翅膀的阈值
+\item[$a$]    视频中的果蝇身体长度的一半
+\item[$b$]    视频中的果蝇身体宽度的一半
+\item[$\vec{\bm p}$]    果蝇特征点坐标
+\end{denotation}

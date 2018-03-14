@@ -1,0 +1,23 @@
+% !Mode:: "TeX:UTF-8"
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
+
+\documentclass[type=master]{thuthesis}
+
+\ifxetex
+  \setCJKfamilyfont{zhfs}[RawFeature={vertical:}]{STFangsong}
+\else % for latex/pdflatex
+  \usepackage{CJKvert}
+\fi
+
+\begin{document}
+\thusetup{
+  cauthor={侯奇},
+  ctitle={果蝇行为分析中的预处理技术和背景模型研究}
+}
+
+\shuji % 使用默认标题和默认作者
+
+\end{document}

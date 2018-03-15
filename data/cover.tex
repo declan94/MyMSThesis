@@ -23,7 +23,7 @@
   %cassosupervisor={陈文光教授}, % 副指导老师
   %ccosupervisor={某某某教授}, % 联合指导老师
   % 日期自动使用当前时间，若需指定按如下方式修改：
-  cdate={二〇一七年六月},
+  cdate={二〇一八年六月},
   %
   % 博士后专有部分
   %cfirstdiscipline={计算机科学与技术},
@@ -36,7 +36,7 @@
   %=========
   % 英文信息
   %=========
-  etitle={Study on Preprocessing Technique and Background Model in Drosophila Recognition and Behavior Analysis},
+  etitle={Study on Quality Evaluation Algorithms and Automatic Switching Systems for Speech in HF Communications},
   % 这块比较复杂，需要分情况讨论：
   % 1. 学术型硕士
   %    edegree：必须为Master of Arts或Master of Science（注意大小写）
@@ -54,31 +54,34 @@
   %    emajor：不填写此项
   edegree={Master of Science},
   emajor={Information and Communication Engineering},
-  eauthor={Hou Qi},
+  eauthor={Chen Ye},
   esupervisor={Associate Professor Gu Yuantao},
   %eassosupervisor={Chen Wenguang},
   % 日期自动生成，若需指定按如下方式修改：
-  edate={April, 2016},
+  edate={April, 2018},
   %
   % 关键词用“英文逗号”分割
-  ckeywords={果蝇, 背景模型, 行为分析},
-  ekeywords={Drosophila, Background Model, Behavior Analysis}
+  ckeywords={短波, 语音质量评价, 自动选路},
+  ekeywords={Short-wave, Speech Quality Evaluation, Automatic Switching}
 }
+
 
 % 定义中英文摘要和关键字
 \begin{cabstract}
-  动物行为学研究是生物学研究的一个重要领域，动物行为学通过观察、计数研究动物的行为。果蝇的基因结构简单、身体结构简单，成为动物行为学研究中的重点研究对向。果蝇行为学研究需要分析大量的果蝇视频数据，手工标定需要花费大量的人力成本，且手工标定可能存在标准不一致等问题，用计算机自动分析果蝇的行为成为一个可行解决方案。目前已经存在自动分析果蝇行为的研究。果蝇行为识别的主要流程包括果蝇活动台提取、果蝇身体轮廓提、果蝇特征提取、行为模式识别等步骤。目前的研究一般受限于特定的实验条件和拍摄环境，往往难以适应其他实验环境。其中，果蝇轮廓提取步骤往往是其中的制约因素。此外，果蝇活动台提取步骤也限制了整个流程自动化的程度。为此，本文提出一种特定排列模式下的果蝇活动台提取算法和一种基于背景模型的轮廓提取算法。主要工作可以概括为以下几个方面：
 
-  首先，本文提出一种特定排列模式下的果蝇活动台轮廓提取算法。通过圆检测等形状检测方式提取活动台的位置和大小，进而根据果蝇活动台的排列方式，对果蝇活动台的位置进行进一步的调整。
+  短波通信又称高频通信，是指使用频率范围在高频（HF）的无线电进行通信的方式，最早出现于1900年代。短波通信主要利用天波电离层反射，所以无需中继站即可实现远距离通信，具有机动性强、设备成本低、对基础设施依赖小等优点，因此广泛应用于广播、军事和应急救援等领域。而同时，短波通信的缺陷也非常突出，因为受电离层变化和多径传播等因素的影响，短波通信的信道非常不稳定，导致其通信质量起伏较大，影响通信的稳定性。
+  
+  在军事应用中，为了提高短波语音通信的通信质量和可靠性，常采用多路接收的措施。例如在空地通信中，在地面不同地点建立多个短波接收站台，再将接收到的短波语音信号汇总到一起，由人工选择一路质量最优的信号接入给地面指挥中心。人工选择的效率不高，稳定性不强，影响通信的及时性和可靠性，亟待由可靠的算法代替。目前对于语音质量的评价算法大多针对信噪比较高的语音，对短波语音并不能很好的适用。为此，本文提出了两种应用于短波语音的客观质量评价算法和一套自动选路系统。主要工作可以概括为以下几个方面：
 
-  其次，本文提出一种基于背景模型的果蝇轮廓提取算法，可以从视频中提取果蝇的身体和翅膀。算法采用单高斯模型作为背景模型，通过亮度畸变区分果蝇翅膀和身体。初步建模后分离果蝇身体和活动台背景；然后在对活动台单独进建模的基础上，得到最终的背景模型。
+  首先，本文针对短波语音的特殊性，提出了一种基于语谱图噪音模型的语音质量客观评价算法，通过对短波语音语谱图上的噪音谱建模、分析、综合，给出短波语音的客观质量评分。另外提出了一种基于自编码器的语音质量客观评价算法，可以更广泛地应用于其他特殊领域的语音质量评价。
 
-  然后，在背景模型的基础上，进行果蝇打架行为分析，验证了本文提出的算法的有效性。
+  其次，本文提出了一种基于互相关和最小生成树的多路语音时域对齐算法，并在此基础上提出了多路短波语音自动选路切换系统。这是针对上述场景中人工选路系统的优化方案。
 
-  最后，搭建果蝇行为识别网站，并介绍果蝇行为识别软件的程序部分和网站部分，以及网站的基本使用说明。
+  再次，搭建了一套在线的语音质量主管评价辅助系统，并且利用该系统构建了一组具有平均主观意见分标签的短波语音数据集。
 
-  本文提出的基于特定排列模式的果蝇活动台算法提高了果蝇自动分析的自动化程度；基于背景模型的果蝇轮廓提取算法具有较好的鲁棒性，可以适用于不同拍摄环境，有助于提高自动化果蝇行为分析的适用范围。此外，该模型还可以应用于动物行为学中对其他动物的研究。
+  最后，在短波语音数据上，本文将所提的客观质量评分算法和两种标准算法进行了效果比较，多项指标均反映出本文所提算法有着更好的表现。本文还进行了实际的多路语音选路的实验，验证了本文所提自动选路系统的功能。
 
+  本文所提的算法和系统有着较高的实用价值，可以在实际应用中提高短波语音通信的质量和可靠性。本文所提的语音客观质量评价算法不仅适用于短波语音领域，也适用于对其他低信噪比语音的处理。
 
 \end{cabstract}
 
@@ -87,19 +90,20 @@
 
 \begin{eabstract}
 
-In biology research, ethology is an important area. By observing the behavior of animals, ethologists get the internal mechanism of animals. Drosophila has a simple genetic structure as well as a simple body structure, which makes it an important role in ethology. In traditional research, much manpower is needed to watch the videos and count the behaviors. Also, there may be different standards for behavior detection, which makes it hard to generalize. With the development of computer vision and machine learning, analyzing the fly video by computer becomes possible.
+High-frequency (HF) communication, also known as short-wave communication, refers to the use of high frequency range in radio communication, which first appeared in the 1900s. HF communication exploits the ionospheric reflection to achieve long-distance communication without relay stations. It is widely used in radio broadcast, military, emergency relief and many other applications due to its flexibility, mobility, low cost of equipment, and low dependence on infrastructure. Meanwhile, a severe shortage of HF communication is that its communication channel is very unstable due to ionospheric changes and multipath propagation, which causes the communication quality to fluctuate, and reduces the stability of communication.
 
-The main procedure includes drosophila chamber extraction, drosophila body contour extraction, drosophila feature extraction, and drosophila behavior pattern recognition. But the current study is generally limited by specific environments, and cannot generalize to other laboratory circumstance. Drosophila contour extraction step is often the restrictive factors, followed by drosophila chamber extraction step. To solve this problem, we propose a method to extract drosophila chambers based on the specific layout pattern. For the contour extraction step, we propose a drosophila contour extraction algorithm based on background model. The main work can be summarized as follows:
+In military applications, in order to improve the quality and reliability of speeches in HF communication, multi-path reception measures are often applied. For example, in the case of communication between aircraft and ground control center, multiple HF receiving stations are established at different locations, receiving signals from aircraft. Then the one with the best quality among those multiple signals is chosed mannually and is transimitted to the ground control center. The mannual selection is not efficient and stable, which reduces timeliness and reliability of communication. It needs to be replaced by algorithms. At present, most of the speech quality evaluation algorithms are based on speech signals with high SNR, and are not suitable for HF speech. For this reason, this paper proposes two kinds of objective quality evaluation algorithms applied to HF speech and an automatic switching system. The main work can be summarized as the following aspects:
 
-Firstly, this paper presents a drosophila chamber extraction algorithm based on specific layout pattern. First extract the chambers by shape detection method such as hough circle detection, then cluster the shapes to get the position of chambers, then adjust the position according to the layout of the chambers with transformation of coordinates.
+Firstly, aiming at the particularity of HF speech, this paper proposes an objective speech quality evaluation algorithm based on the 
+noise spectrum model, scoring the quality of speech through the modeling, analysis and synthesis of the noise spectrum. In addition, another objective evaluation algorithm for speech quality based on autoencoder is proposed, which can be easily applied to speech quality evaluation in many other fields.
 
-Secondly, this paper presents a drosophila contour extraction algorithm based on background model, which extracts the body and wings of drosophila from the video. The algorithm uses a single Gaussian distribution as the background model, and distinguishes the drosophila wings and body by luminance distortion. After the preliminary background modeling, we can separate the drosophila body from the containers. Then we do background modeling on the container only, which makes a better background model for drosophila contour extraction.
+Secondly, this paper proposes a time alignment algorithm for multi-channel speeches based on cross-correlation and minimum spanning tree. Based on this, an automatic switching system for multi-channel HF speeches is proposed. This is an optimization scheme for the manual switching system in the above scenario.
 
-Then, we analyze the fly fighting behaviors based on the algorithm, and it turns out to be effective.
+Thirdly, an online assistant system for subjective quality evaluation of speeches is established, and a dataset of HF speech pieces with MOS (mean opinion score) is constructed with the help of the system.
 
-Finally, we build a website that provide fly behavior analysis service, also we make a detailed introduction to the DetectFly software and the website, as well as the basic instructions for the website.
+Finally, this paper compares performance of the proposed algorithms with two standard speech quality evaluation algorithms on the HF speech dataset, which reflects the better performance of the proposed algorithms. This paper also carried out an actual multi-channel speech switching experiment to verify the function of the proposed system.
 
-In conclusion, the drosophila chamber extraction algorithm reduce the manual operation in drosophila analysis. The contour extraction algorithm proves to be robust in different videos from different cameras, which helps to improve the application scope of  automated drosophila behavior analysis. In addition, the model can be applied to animal studies in other animals.
+The algoritms and system proposed in this paper have high practical value and can improve the quality and reliability of HF speech communication in practical applications. The proposed objective quality evaluation algorithm for speech is not only applicable to HF speech, but also applicable to other low-SNR speech.
 
 \end{eabstract}
 

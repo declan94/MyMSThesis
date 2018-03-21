@@ -156,10 +156,46 @@ H_k(n) = \left\{
 \end{figure}
 
 自编码器网络使用tensorflow\cite{abadi2016tensorflow}实现，隐藏层激活函数使用softplus函数$\sigma(x)=ln⁡(e^x+1)$，使用质量非常高、基本未受到干扰或者噪音污染的短波语音训练自编码器，使其学习短波语音的语谱结构特征。使用总计时长约5小时的清晰短波语音进行训练，每个训练样本的语音时长为16*8=128ms，故总计样本数量为14万左右。训练的batch大小设置为256，初始学习速率0.001。
-经过一段时间的训练，自编码器可以学习到清晰短波语音的语谱特征，如图~\ref{fig:ae-pure1}是一段清晰短波语音经过自编码器的输入输出结果。可以看出，尽管自编码器将输入向量的长度由输入的280压缩到了隐藏层的80，最终输入和输出的梅尔语谱图相差甚微，基本的特征都得到了保留。
 
 \begin{figure}
 \centering
 \includegraphics[width=0.8\textwidth]{ae-pure1}
 \caption{自编码器输入输出语谱图（清晰语音）\label{fig:ae-pure1}}
 \end{figure}
+
+经过一段时间的训练，自编码器可以学习到清晰短波语音的语谱特征，如图~\ref{fig:ae-pure1}是一段清晰短波语音经过自编码器的输入输出结果。可以看出，尽管自编码器将输入向量的长度由输入的280压缩到了隐藏层的80，最终输入和输出的梅尔语谱图相差甚微，基本的特征都得到了保留。
+
+\subsection{自编码器评分}
+
+
+\begin{figure}
+\centering
+\includegraphics[width=0.5\textwidth]{ae-sys}
+\caption{自编码器评分流程 \label{fig:ae-sys}}
+\end{figure}
+
+\begin{figure}
+\centering
+\subcaptionbox{低质量语音\label{fig:ae-low}} {
+    \includegraphics[width=0.45\textwidth]{ae-low}
+}
+\subcaptionbox{中等质量语音\label{fig:ae-mid}}{
+    \includegraphics[width=0.45\textwidth]{ae-mid}
+}
+\subcaptionbox{高质量语音\label{fig:ae-high}} {
+    \includegraphics[width=0.45\textwidth]{ae-high}
+}
+\caption{不同质量语音经过自编码器时语谱图的变化\label{fig:ae-diffs}}
+\end{figure}
+
+经过训练的自编码器记住了清晰短波语音的语谱结构特征，所以当输入的短波语音是质量很高，很清晰的语音时，输出的语谱图和输入的语谱图相差甚微。但是如果输入的短波语音是在传播中发生畸变的，或者受到噪音污染的，因为自编码器模型并没有学习畸变或者噪音的语谱结构，输出的语谱图会和输入的语谱图有所差别。
+
+使用自编码器对短波语音进行客观质量评分的过程如图~\ref{fig:ae-sys}所示，我们通过分析经过自编码器所带来的语谱图变化的大小来给短波语音质量评分，变化越大说明输入语音的质量越差。图~\ref{fig:ae-low} \~ ~\ref{fig:ae-high}分别为质量较低、中等、较高的语音语谱图，左侧为原始语谱图，右侧为经过自编码器之后的语谱图，从中可以明显看出语音质量越高，语谱图经过自编码器之后的变化越小。
+
+由于经过自编码器后的语谱图整体幅值均值可能有变化，所以直接对输入输出语谱图作差来计算语谱图的差异不可取。语谱图的信息主要体现在各个区域的相对幅值大小上，以及幅值较高部分的形状信息上。所以我们定义如下的语谱图差异函数：
+
+\begin{equation}
+D = \max_{q \in Q}\left(\sum_{m, k} (M_{in}(m,k) > P_{in}(q)) \bigoplus (M_{out}(m,k) > P_{out}(q))\right)
+\end{equation}
+
+其中$Q={70,72,74,76,78,80,82,84,86}$，$M_{in}$和$M_{out}$分别为输入输出的梅尔语谱图，$P_{in}$和$P_{out}$分别为输入输出语谱图的百分位函数，例如$P_{in}(70)$表示输入语谱图的70th百分位数。

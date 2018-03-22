@@ -19,7 +19,20 @@
 
 选取两路信号开头一定长时间$T，T>>\delta$，计算互相关函数：
 \begin{equation}\label{eq:corr}
-C_{12}(\delta) = 
+\begin{array}{c}
+    C_{12}(\delta)  = \left\{
+    \begin{array}{rcl}
+        \int_\delta^Ty_1(t)y_2(t-\delta)dt, && {\delta \geq 0} \\
+        \int_0^{T+\delta}y_1(t)y_2(t-\delta)dt, && {\delta < 0}
+    \end{array}
+    \right. \\
+    = \left\{
+    \begin{array}{rcl}
+        \int_\delta^Tx(t-\delta_1)x(t-\delta_2-\delta)dt+\int_\delta^Te_1(t-\delta_1)e_2(t-\delta_2-\delta)dt, && {\delta \geq 0} \\
+        \int_0^{T+\delta}x(t-\delta_1)x(t-\delta_2-\delta)dt+\int_0^{T+\delta}e_1(t-\delta_1)e_2(t-\delta_2-\delta)dt, && {\delta < 0} \\
+    \end{array}
+    \right.
+\end{array}
 \end{equation}
 
 上式右边前一部分，在$\delta=\delta_1-\delta_2$时取得极大值，第二部分，假设噪音均为高斯白噪音，则其大小基本不随$\delta$变化。
@@ -31,12 +44,23 @@ C_{12}(\delta) =
 记$\delta_{12}=\delta_1-\delta_2$，为$y_1 (t)$相对于$y_2 (t)$的延迟大小，$\delta_{12}>0$表明$y_1(t)$落后于$y_2(t)$，$\delta_{12}<0$表明$y_1(t)$超前于$y_2(t)$。
 通过$C_{12}(\delta)$极值点估计出$\delta_{12}$之后，即可通过截取平移获得对齐的两路语音信号$y_1^*(t)$和$y_2^*(t)$：
 \begin{equation}
-\left\{
+% \left\{
     \begin{array}{l}
-        y_1^*(t)= \\
-        y_2^*(t)=
+        y_1^*(t)=  \left\{ 
+            \begin{array}{rcl}
+            y_1(t), && {\delta_{12} \geq 0} \\
+            y_1(t-\delta_{12}), && {\delta_{12} < 0}
+            \end{array}
+        \right. \\
+        \\
+        y_2^*(t)= \left\{ 
+            \begin{array}{rcl}
+            y_2(t), && {\delta_{12} \leq 0} \\
+            y_2(t+\delta_{12}), && {\delta_{12} > 0}
+            \end{array}
+        \right.
     \end{array}
-\right.
+% \right.
 \end{equation}
 上述对于相对延时$δ_{12}$的估计受到以下几方面影响会存在一定误差：
 \begin{enumerate}
@@ -45,7 +69,7 @@ C_{12}(\delta) =
 \end{enumerate}
 
 
-\section{多路语音时间对齐}
+\section{多路语音时间对齐} \label{section:align-multi}
 
 在两路语音对齐算法的基础上，本节介绍一种实现多路语音时间对齐的算法。
 
@@ -80,13 +104,62 @@ w(i,j)=\max⁡ \left\{ C_{ij}(\delta) \right\}
 y_i^* (t)=y_i (t+\delta_{i1}-\min_{j\in I}\delta_{j1})
 \end{equation}
 
-\section{实时多路对齐算法}
+\section{实时多路对齐算法} \label{section:realtime-align}
 
-暂略
+\begin{figure}
+\centering
+\includegraphics[width=0.8\textwidth]{multi-align}
+\caption{实时对齐算法示意\label{fig:multi-align}}
+\end{figure}
 
-\section{选路策略及系统结构}
+实际应用中，往往要求对多路语音信号进行实时处理。在~\ref{section:align-multi}节基础上，本节介绍一种对于多路语音信号流进行实时对齐的算法。
 
+首先对于每一路语音使用一个缓冲队列存储最近一段时间的信号，新来的信号从队尾加入队列，而随着时间推移，队首信号不断出队列，本算法通过控制各路信号出队列的时间，使得从队首出队的信号是时间对齐的。
 
+如图~\ref{fig:multi-align}所示，为方便描述，可以将离散语音信号想象成一个无限长的队列，然后有一个队首指针和队尾指针，两个指针之间的部分即使算法目前实际缓存的语音信号部分。由于随着时间推移不断接收到新的信号，所以队尾指针会随着时间以固定速率后移，而队首指针则是在算法控制下后移以调整延时，最终稳定时，队首和队尾的指针均匀速后移，各路信号缓存的长度不同，队首指针处的信号是时间上对齐的。
+
+算法一开始首先保证各路信号均缓存了时间长度为的数据。随后使用~\ref{section:align-multi}节中的算法可以得出各路信号相对第一路信号的延迟$\delta_{i1}, i \in I$，可能为负值，找到最大的延时，记为$\delta_{k1} = \max \delta_{i1}$，则为了保证队首指针时间对齐，第$i$路信号的队首指针应暂停$\delta_{k1}-\delta_{i1}$时间不移动。这相当于第$i$路信号的延迟增加了$\delta_{k1}-\delta_{i1}$，于是各路信号的队首均对齐到了路信号。之后每0.1秒执行一次上述步骤进行对齐调整。
+进一步，为了保证算法的稳定性，降低执行过程中对于相对延时突发的错误估计造成的影响，可以设置一个调整步长$0<\alpha<1$，各路队首指针暂停时间修改为$\alpha(\delta_{k1}-\delta_{i1})$。$\alpha$越大则越快收敛到对齐状态，但是越不稳定；相反越小则收敛速度越慢，但是越稳定。可以根据情况设定$\alpha$的取值。
+另外，此方法永远在增加信号的延迟，会导致合路信号的延迟越来越大，可以做如下改进：每次对齐调整完成后，如果最短的缓存队列长度为超过了$T$，则所有路信号的队首指针同时向后调整使得最短的缓存队列长度缩短为$T$。这样，合路信号的延迟永远为延迟最大的一路信号的延迟加上$T$。
+
+\section{选路策略及系统设计}
+
+本节介绍短波语音信号的选路策略以及选路系统的设计。由于各路信号的强度和背景噪音不同，如果直接对各段时间内的信号，总是切换到质量评分最高的一路信号，可能出现信号切换过于频繁，导致听起来连贯的问题，反而影响合路信号的质量。以下几项策略保证了合路信号在选择尽量优质量的语音通路的同时，提高合路语音的自然度。
+\begin{enumerate}
+    \item 需要对各路语音的功率进行归一化处理，可以使用各路语音的均值功率作为参考，将各路语音信号放大或缩小从而统一功率。
+    \item 为防止意外状况导致的错误评分带来的抖动，对各路语音的实时评分经过一个低通滤波作为选路参考的分值。
+    \item 为了避免过度频繁的切换语音通路，设定一个适当大小的阈值，只有当新的最优通路的评分超过当前选择通路的评分达到一定阈值，才切换至新的最优通路。否则依然保持原来选择的通路。 
+    \item 在通路切换时，采用线性渐变的过度来平滑切换的过程。
+\end{enumerate}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.8\textwidth]{switching-sys}
+\caption{选路系统结构\label{fig:switching-sys}}
+\end{figure}
+
+如图~\ref{fig:switching-sys}所示，选路系统分为“功率均衡模块”、“时间对齐模块”、“客观评分模块”、“选路输出模块”这四个模块，分别实现上述几项策略。
+
+功率均衡模块负责均衡各路语音信号的功率，具体步骤如下：统计每一路输入最近1s时间内的信号功率$P_i, i \in I$，将其经过一个低通滤波器，得到滤波后的平均信号功率$\bar{P_i}$，据此可利用式~\ref{eq:power-gain}计算各路的信号增益$Gain_i$，各路信号分别乘上对应增益实现各路信号的功率均衡。
+\begin{equation}\label{eq:power-gain}
+Gain_i = \sqrt{\frac {K\bar{P_i}} {\sum_{k \in I}{\bar{P_k}}} }
+\end{equation}
+
+时间对齐模块负责各路语音信号的时间对齐，利用~\ref{section:realtime-align}节介绍的算法实现。
+
+客观评分模块对每一路最近1s内的信号使用~\ref{chap:algorithms}章介绍的算法进行客观评分，然后再通过低通滤波器得到去除抖动后的质量评分$\bar{S_i}, i \in I$。
+
+选路输出模块负责选路切换，设定切换阈值$T_{switch}$，若当前输出为$i$路语音，切换到第$j$路语音的条件为：
+\begin{equation}
+\begin{array}{l}
+\bar{S_j} = \max_{k \in I} \bar{S_k} \\
+\bar{S_j} - \bar{S_i} > T_{switch}
+\end{array}
+\end{equation}
+在发生切换时，切换模块自动完成线性平滑过度，设定切换时长为$\Delta$，则切换阶段输出语音可表示为：
+\begin{equation}
+y_{out}(t) = \frac{ty_j(t)+(\Delta-t)y_i(t)}{\Delta}
+\end{equation}
 
 \begin{algorithm}
     \caption{自适应的活动台检测算法}

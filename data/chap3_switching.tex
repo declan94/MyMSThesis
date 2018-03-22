@@ -1,0 +1,119 @@
+\chapter{自动选路系统}
+\label{chapter:switching}
+
+针对~\ref{chap:introduction}章中介绍的应用场景，即在不同地点接收多路短波语音信号，然后再根据质量进行选路的应用场景，本文基于~\ref{chap:algorithms}章介绍的客观质量评价算法，实现了一个不需要人工参与的短波语音自动选路系统。主要包括多路语音时间对齐算法、选路切换策略等工作，以下分别进行介绍。
+
+\section{两路语音时间对齐}\label{section:align2}
+
+两路语音对齐算法是多路语音对齐算法的基础，这里介绍一种基于互相关的朴素算法。设原始语音为$x(t)$，收到的两路语音信号分别为$y_1(t)$和$y_2(t)$，设两路信号延迟分别为$\delta_1$和$\delta_2$，则有以下关系：
+\begin{equation}
+\left\{
+    \begin{array}{l}
+        y_1(t) = x(t-\delta_1) + e_1(t-\delta_1) \\
+        y_2(t) = x(t-\delta_2) + e_2(t-\delta_2)
+    \end{array}
+\right.
+\end{equation}
+
+其中$e_1$和$e_2$为两路信号传播过程中分别引入的噪音信号。
+
+选取两路信号开头一定长时间$T，T>>\delta$，计算互相关函数：
+\begin{equation}\label{eq:corr}
+C_{12}(\delta) = 
+\end{equation}
+
+上式右边前一部分，在$\delta=\delta_1-\delta_2$时取得极大值，第二部分，假设噪音均为高斯白噪音，则其大小基本不随$\delta$变化。
+
+从而当$\delta=\delta_1-\delta_2$时$C_{12}(\delta)$取得极大值，即：
+\begin{equation}
+\delta1 - \delta2 = \arg \max C_{12}(\delta)
+\end{equation}
+记$\delta_{12}=\delta_1-\delta_2$，为$y_1 (t)$相对于$y_2 (t)$的延迟大小，$\delta_{12}>0$表明$y_1(t)$落后于$y_2(t)$，$\delta_{12}<0$表明$y_1(t)$超前于$y_2(t)$。
+通过$C_{12}(\delta)$极值点估计出$\delta_{12}$之后，即可通过截取平移获得对齐的两路语音信号$y_1^*(t)$和$y_2^*(t)$：
+\begin{equation}
+\left\{
+    \begin{array}{l}
+        y_1^*(t)= \\
+        y_2^*(t)=
+    \end{array}
+\right.
+\end{equation}
+上述对于相对延时$δ_{12}$的估计受到以下几方面影响会存在一定误差：
+\begin{enumerate}
+\item 噪音污染可能不是理想白噪音，当噪音污染程度较大时会导致估计误差较大。
+\item 两路语音相对延时可能较大，当延迟大小接近$T$的数量级时，截取的信号重叠部分较小，会导致估计误差较大。
+\end{enumerate}
+
+\section{多路语音时间对齐}
+
+在两路语音对齐算法的基础上，本小节介绍一种实现多路语音时间对齐的算法。
+
+设收到有$K$路语音$(K\geq3$)，分别为$y_1(t), y_2(t), ..., y_K(t)$，设指标集$I={i│i\in N^+, i\leq K}$。首先使用~\ref{section:align2}的方法我们可以估计出多路语音两两之间的相对延时$\delta_{ij}  (i,j\in I,i\neq j)$。
+假设我们的估计不存在误差，且定义$\delta_{ii}=0,(i \in I)$，则
+\begin{equation}\label{eq:delay-relations}
+\delta_{ij}=\delta_{ik}+\delta_{jk}, \forall i,j,k \in I
+\end{equation}
+
+但是由于噪音的存在，延时的估计可能存在误差，所以两两之间的相对延时会存在不一致的情况，即公式~\ref{eq:delay-relations}并不恒成立。因而就需要从所有$K(K+1)/2$个相对延时中选取$K-1$个以确定一个统一的一致的，各路语音的相对延时。
+
+一种最简单朴素的方法是以某一通道语音为基准，直接选取所有其他通道语音和该路语音的相对延时。例如以$y_1 (t)$为基准，选取$\delta_{1i}  (i \in I, i \neq 1)$作为统一标准确定各路语音的延时。但是这种方法得出的结果未必是最优的，如果 $y_1 (t)$ 受到的噪音污染较大，则很有可能得出的结果误差相当大。对此问题可以考虑使用后面介绍的语音质量客观评价方法来选取一路质量最优的语音作为参考基准。但是即便如此依然存在问题：如果选取的基准路语音$y_k (t)$和其他几路语音相对延时较大，而其他几路语音之间的相对延时较小，则估计的$y_k (t)$和其他几路语音的相对延时也会有较大误差，不如选取其他几路语音之间的相对延时加上$y_k (t)$和某一路语音的相对延时更好。
+
+针对以上讨论的问题，以下介绍一种基于图论最小生成树算法来选取相对延时的方法。
+
+我们的目标是要选取$K-1$个相对延时将所有K路语音关联起来，并使得选取的相对延时是估计准确性尽量高的。根据~\ref{section:align2}的分析，对两路语音之间相对延时的估计的准确度可以通过互相关峰值的大小来反应，互相关的峰值越大，则准确性越高。以各路语音为节点构建一个全连通的有权无向图，各边的权值设为相连节点代表的两路语音之间互相关峰值的大小，则我们的目标可以描述为：选取$K-1$条边将$K$个节点连成一颗树，并使得$K-1$条边的权值和在所有的生成树中最大。即构造如下有权无向图
+\begin{equation}
+\begin{array}{l}
+G(V,E), \\
+V = I, \\
+E = \left\{(i,j)|i, j\in I, i \neq j\right\}, \\
+w(i,j)=\max⁡ \left\{ C_{ij}(\delta) \right\}
+\end{array}
+\end{equation}
+
+问题即转化成求解图$G$的最大生成树，最大生成树和最小生成树可互相转化，直接对所有边权重求相反数即可。
+
+求解最小生成树问题的经典算法有Boruvka算法、Prim算法和Kruskal算法等。Boruvka算法是最古老的最小生成树算法，时间复杂度为$O(|E|log|V|)$；Prim算法和Kruskal算法是最常用和广为人知的两种最小生成树算法，时间复杂度分别为$O(|E|+|V|log|V|)$和$O(|E|log|E|)$。Yao~\cite{YAO197521}在Boruvka算法基础上改进提出了一种更快速的算法，时间复杂度为$O(|E|loglog|V|)$。而Karger等人~\cite{Karger:1995:RLA:201019.201022}提出的线性时间算法是目前最快的最小生成树算法。
+
+得到最大生成树后，生成树上对应的边即代表应该选取的相对延迟估计，在这$K-1$个相对延迟的基础上，利用式x.x.x即可求出各路信号相对$y_1 (t)$的延迟$\delta_{i1},(i \in I)$，其中$\delta_{11}=0$。随后对各路信号进行对齐和平移，得到时间对齐后的信号：
+\begin{equation}
+y_i^* (t)=y_i (t+\delta_{i1}-\min_{j\in I}\delta_{j1})
+\end{equation}
+
+\section{实时多路对齐算法}
+
+\begin{algorithm}
+    \caption{自适应的活动台检测算法}
+    \label{alg:container_split_adaptive}
+\begin{algorithmic}[1]
+\INPUT
+    \Statex 果蝇行为视频；
+    \Statex 活动台的数量$K_1$；
+    \Statex 活动台圆的数量$K_2$；
+    \Statex 活动台的最大可能半径$R_{max}$ 和 最小可能半径 $R_{min}$；
+    \Statex Hough圆检测参数最大自适应次数$max\_iters$。
+\OUTPUT
+    \Statex 活动台的圆心$(x_1, y_1), \ldots, (x_{K_1},y_{K_1})$；
+    \Statex 活动台的外径$R$；
+    \Statex 活动台的移入时刻$t_{1, in}, \ldots, t_{K_1, in}$和移出时刻$t_{1, out}, \ldots, t_{K_1, out}$；
+\State 从视频中抽取$M_1$帧视频$\{ I_{k_1}, I_{k_2}, \ldots, I_{k_{M_1}} \}$；
+\State 初始化Hough圆检测的参数 $param_1^{\{0\}} = 200$, $param_2^{\{0\}} = 200$；
+\For {$i = 0$ to $max\_iters$;}
+    \State 对视频帧$\{ I_{k_1}, I_{k_2}, \ldots, I_{k_{M_1}} \}$，使用参数$param^{\{i\}}_1$和$param^{\{i\}}_2$进行Hough圆变换检测，得到$N_i$个圆；
+    \If {$N_i < 3K_1$; }
+        \State $param_1^{\{i+1\}} = 0.9\times param_1^{\{i\}}, param_2^{\{i+1\}} = 0.9\times param_2^{\{i\}}$
+    \Else
+        \State break
+    \EndIf
+\EndFor
+\State 从视频中抽取$M_2$帧视频$\{ I_{l_1}, I_{l_2}, \ldots, I_{l_{M_2}} \}$
+\State 使用参数$param_1 = param_1^{\{i\}}, param_2 = param_2^{\{i\}}$，利用Hough圆检测算法，对视频帧$\{ I_{l_1}, I_{l_2}, \ldots, I_{l_{M_2}} \}$进行圆检测，得到$N$个圆 $(\tilde{x}_1, \tilde{y}_1, r_1), \ldots, (\tilde{x}_N, \tilde{y}_N, r_N)$；
+\State 使用GMM算法\cite{GMM_1999}将圆心$(\tilde{x}_1, \tilde{y}_1), \ldots, (\tilde{x}_N, \tilde{y}_N)$聚为$K_1$类，得到$(x_1, y_1), \ldots, (x_{K_1},y_{K_1})$；\label{alg:arena:clusterXY}
+\State 使用GMM算法将半径$r_1, \ldots, r_N$聚为$K_2$类，得到$R_1, R_2, \ldots, R_{k_2}$，最终活动台的外径为$R = \max(R_1, R_2, \ldots, R_{k_2})$；\label{alg:arena:clusterR}
+\State 检测$(x_i, y_i)$周围检测到的Hough圆的数目，利用二分查找法，分别查找$K_1$个聚类中心的移入视频的时刻$t_{i,in}$和移出视频的时刻$t_{i, out}$；
+\State 输出$(x_1, y_1),\ldots,(x_K, y_K)$、$R$和$t_{1, in}, \ldots, t_{K_1, in}$以及移出时刻$t_{1, out}, \ldots, t_{K_1, out}$。
+\end{algorithmic}
+\end{algorithm}
+
+\section{小结}
+
+本章主要介绍了自动选路系统。

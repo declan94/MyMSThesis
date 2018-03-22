@@ -152,7 +152,7 @@ Gain_i = \sqrt{\frac {K\bar{P_i}} {\sum_{k \in I}{\bar{P_k}}} }
 选路输出模块负责选路切换，设定切换阈值$T_{switch}$，若当前输出为$i$路语音，切换到第$j$路语音的条件为：
 \begin{equation}
 \begin{array}{l}
-\bar{S_j} = \max_{k \in I} \bar{S_k} \\
+\bar{S_j} = \max\limits_{k \in I} \bar{S_k} \\
 \bar{S_j} - \bar{S_i} > T_{switch}
 \end{array}
 \end{equation}

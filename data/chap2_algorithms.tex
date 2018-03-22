@@ -198,7 +198,7 @@ H_k(n) = \left\{
 由于经过自编码器后的语谱图整体幅值均值可能有变化，所以直接对输入输出语谱图作差来计算语谱图的差异不可取。语谱图的信息主要体现在各个区域的相对幅值大小上，以及幅值较高部分的形状信息上。所以我们定义如下的语谱图差异函数：
 
 \begin{equation}
-D = \max_{q \in Q}\left(\sum_{m, k} (M_{in}(m,k) > P_{in}(q)) \bigoplus (M_{out}(m,k) > P_{out}(q))\right)
+D = \max\limits_{q \in Q}\left(\sum_{m, k} (M_{in}(m,k) > P_{in}(q)) \bigoplus (M_{out}(m,k) > P_{out}(q))\right)
 \end{equation}
 
 其中$Q={70,72,74,76,78,80,82,84,86}$，$M_{in}$和$M_{out}$分别为输入输出的梅尔语谱图，$P_{in}$和$P_{out}$分别为输入输出语谱图的百分位函数，例如$P_{in}(70)$表示输入语谱图的70th百分位数。

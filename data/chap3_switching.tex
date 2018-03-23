@@ -161,39 +161,6 @@ Gain_i = \sqrt{\frac {K\bar{P_i}} {\sum_{k \in I}{\bar{P_k}}} }
 y_{out}(t) = \frac{ty_j(t)+(\Delta-t)y_i(t)}{\Delta}
 \end{equation}
 
-\begin{algorithm}
-    \caption{自适应的活动台检测算法}
-    \label{alg:container_split_adaptive}
-\begin{algorithmic}[1]
-\INPUT
-    \Statex 果蝇行为视频；
-    \Statex 活动台的数量$K_1$；
-    \Statex 活动台圆的数量$K_2$；
-    \Statex 活动台的最大可能半径$R_{max}$ 和 最小可能半径 $R_{min}$；
-    \Statex Hough圆检测参数最大自适应次数$max\_iters$。
-\OUTPUT
-    \Statex 活动台的圆心$(x_1, y_1), \ldots, (x_{K_1},y_{K_1})$；
-    \Statex 活动台的外径$R$；
-    \Statex 活动台的移入时刻$t_{1, in}, \ldots, t_{K_1, in}$和移出时刻$t_{1, out}, \ldots, t_{K_1, out}$；
-\State 从视频中抽取$M_1$帧视频$\{ I_{k_1}, I_{k_2}, \ldots, I_{k_{M_1}} \}$；
-\State 初始化Hough圆检测的参数 $param_1^{\{0\}} = 200$, $param_2^{\{0\}} = 200$；
-\For {$i = 0$ to $max\_iters$;}
-    \State 对视频帧$\{ I_{k_1}, I_{k_2}, \ldots, I_{k_{M_1}} \}$，使用参数$param^{\{i\}}_1$和$param^{\{i\}}_2$进行Hough圆变换检测，得到$N_i$个圆；
-    \If {$N_i < 3K_1$; }
-        \State $param_1^{\{i+1\}} = 0.9\times param_1^{\{i\}}, param_2^{\{i+1\}} = 0.9\times param_2^{\{i\}}$
-    \Else
-        \State break
-    \EndIf
-\EndFor
-\State 从视频中抽取$M_2$帧视频$\{ I_{l_1}, I_{l_2}, \ldots, I_{l_{M_2}} \}$
-\State 使用参数$param_1 = param_1^{\{i\}}, param_2 = param_2^{\{i\}}$，利用Hough圆检测算法，对视频帧$\{ I_{l_1}, I_{l_2}, \ldots, I_{l_{M_2}} \}$进行圆检测，得到$N$个圆 $(\tilde{x}_1, \tilde{y}_1, r_1), \ldots, (\tilde{x}_N, \tilde{y}_N, r_N)$；
-\State 使用GMM算法\cite{GMM_1999}将圆心$(\tilde{x}_1, \tilde{y}_1), \ldots, (\tilde{x}_N, \tilde{y}_N)$聚为$K_1$类，得到$(x_1, y_1), \ldots, (x_{K_1},y_{K_1})$；\label{alg:arena:clusterXY}
-\State 使用GMM算法将半径$r_1, \ldots, r_N$聚为$K_2$类，得到$R_1, R_2, \ldots, R_{k_2}$，最终活动台的外径为$R = \max(R_1, R_2, \ldots, R_{k_2})$；\label{alg:arena:clusterR}
-\State 检测$(x_i, y_i)$周围检测到的Hough圆的数目，利用二分查找法，分别查找$K_1$个聚类中心的移入视频的时刻$t_{i,in}$和移出视频的时刻$t_{i, out}$；
-\State 输出$(x_1, y_1),\ldots,(x_K, y_K)$、$R$和$t_{1, in}, \ldots, t_{K_1, in}$以及移出时刻$t_{1, out}, \ldots, t_{K_1, out}$。
-\end{algorithmic}
-\end{algorithm}
-
 \section{小结}
 
 本章主要介绍了自动选路系统。

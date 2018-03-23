@@ -1,7 +1,7 @@
 \chapter{自动选路系统}
 \label{chapter:switching}
 
-针对~\ref{chap:introduction}章中介绍的应用场景，即在不同地点接收多路短波语音信号，然后再根据质量进行选路的应用场景，本文基于~\ref{chap:algorithms}章介绍的客观质量评价算法，实现了一个不需要人工参与的短波语音自动选路系统。主要包括多路语音时间对齐算法、选路切换策略等工作，以下分别进行介绍。
+针对~\ref{chapter:introduction}章中介绍的应用场景，即在不同地点接收多路短波语音信号，然后再根据质量进行选路的应用场景，本文基于~\ref{chapter:algorithms}章介绍的客观质量评价算法，实现了一个不需要人工参与的短波语音自动选路系统。主要包括多路语音时间对齐算法、选路切换策略等工作，以下分别进行介绍。
 
 \section{两路语音时间对齐}\label{section:align2}
 
@@ -147,7 +147,7 @@ Gain_i = \sqrt{\frac {K\bar{P_i}} {\sum_{k \in I}{\bar{P_k}}} }
 
 时间对齐模块负责各路语音信号的时间对齐，利用~\ref{section:realtime-align}节介绍的算法实现。
 
-客观评分模块对每一路最近1s内的信号使用~\ref{chap:algorithms}章介绍的算法进行客观评分，然后再通过低通滤波器得到去除抖动后的质量评分$\bar{S_i}, i \in I$。
+客观评分模块对每一路最近1s内的信号使用~\ref{chapter:algorithms}章介绍的算法进行客观评分，然后再通过低通滤波器得到去除抖动后的质量评分$\bar{S_i}, i \in I$。
 
 选路输出模块负责选路切换，设定切换阈值$T_{switch}$，若当前输出为$i$路语音，切换到第$j$路语音的条件为：
 \begin{equation}

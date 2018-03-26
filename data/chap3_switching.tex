@@ -1,4 +1,4 @@
-\chapter{自动选路系统}
+\chapter{短波语音自动选路系统}
 \label{chapter:switching}
 
 针对~\ref{chapter:introduction}章中介绍的应用场景，即在不同地点接收多路短波语音信号，然后再根据质量进行选路的应用场景，本文基于~\ref{chapter:algorithms}章介绍的客观质量评价算法，实现了一个不需要人工参与的短波语音自动选路系统。主要包括多路语音时间对齐算法、选路切换策略等工作，以下分别进行介绍。
@@ -97,7 +97,24 @@ w(i,j)=\max⁡ \left\{ C_{ij}(\delta) \right\}
 
 问题即转化成求解图$G$的最大生成树，最大生成树和最小生成树可互相转化，直接对所有边权重求相反数即可。
 
-求解最小生成树问题的经典算法有Boruvka算法、Prim算法和Kruskal算法等。Boruvka算法是最古老的最小生成树算法，时间复杂度为$O(|E|log|V|)$；Prim算法和Kruskal算法是最常用和广为人知的两种最小生成树算法，时间复杂度分别为$O(|E|+|V|log|V|)$和$O(|E|log|E|)$。Yao~\cite{YAO197521}在Boruvka算法基础上改进提出了一种更快速的算法，时间复杂度为$O(|E|loglog|V|)$。而Karger等人~\cite{Karger:1995:RLA:201019.201022}提出的线性时间算法是目前最快的最小生成树算法。
+求解最小生成树问题的经典算法有Boruvka算法、Prim算法和Kruskal算法等。Boruvka算法是最古老的最小生成树算法，时间复杂度为$O(|E|log|V|)$；Prim算法和Kruskal算法是最常用和广为人知的两种最小生成树算法，时间复杂度分别为$O(|E|+|V|log|V|)$和$O(|E|log|E|)$。Yao~\cite{YAO197521}在Boruvka算法基础上改进提出了一种更快速的算法，时间复杂度为$O(|E|loglog|V|)$。而Karger等人~\cite{Karger:1995:RLA:201019.201022}提出的线性时间算法是目前最快的最小生成树算法。我们使用经典的Prim算法，如算法~\ref{alg:prim}所示。
+
+\begin{algorithm}
+    \caption{求解最小生成树的Prim算法}
+    \label{alg:prim}
+\begin{algorithmic}[1]
+\INPUT
+    \Statex 一个加权连通图，$G(V, E)$，其中V为顶点集合，E为边集合
+\OUTPUT
+    \Statex 最小生成树$T(V_T, E_T)$，其中$V_T = V$是最小生成树的顶点集合，$E_T \in E$是最小生成树的边集合
+\State 初始化$V_T = {x}$，其中$x$为集合$V$中的任一顶点，$E_T = {}$，为空
+\State $i=l-1, j=r+1, k=l$
+\While { $V_T \neq V$; }
+    \State 在集合$E$中选取权值最小的边$<u, v>$，其中$u \in V_T, v \not\in V_T$；
+    \State 将边$<u, v>$加入集合$E_T$，顶点$v$加入集合$V_T$
+\EndWhile
+\end{algorithmic}
+\end{algorithm}
 
 得到最大生成树后，生成树上对应的边即代表应该选取的相对延迟估计，在这$K-1$个相对延迟的基础上，利用式x.x.x即可求出各路信号相对$y_1 (t)$的延迟$\delta_{i1},(i \in I)$，其中$\delta_{11}=0$。随后对各路信号进行对齐和平移，得到时间对齐后的信号：
 \begin{equation}
@@ -163,4 +180,4 @@ y_{out}(t) = \frac{ty_j(t)+(\Delta-t)y_i(t)}{\Delta}
 
 \section{小结}
 
-本章主要介绍了自动选路系统。
+本章主要介绍了短波语音自动选路系统。首先介绍了关键的多路语音时间对齐算法，包括基于互相关的两路语音时间对齐算法、基于最小生成树的多路语音时间对齐算法以及使用缓冲队列实现的实时对齐算法。然后介绍了自动选路系统的设计，包括功率均衡模块、时间对齐模块、客观评分模块和选路切换模块。该系统通过自动客观评分切换选择质量最优的一路信号，并且利用时间对齐算法、功率均衡策略、平滑滤波以及阈值切换策略等保证了输出语音的连贯性。

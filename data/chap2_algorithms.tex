@@ -80,7 +80,30 @@ G_i(m, n) = \left\{
 \item 区域$A_4$：某一连通域，其面积小于一定阈值。
 \end{enumerate}
 
-标注后的语谱图
+\begin{figure}
+\centering
+\subcaptionbox{$A_1$区域示例\label{fig:label-a1}} {
+    \includegraphics[width=0.4\textwidth]{labelA1}
+}
+\subcaptionbox{$A_2$区域示例\label{fig:label-a2}}{
+    \includegraphics[width=0.4\textwidth]{labelA2}
+}
+\vspace{0.8ex}
+\\
+\subcaptionbox{$A_3$区域示例\label{fig:label-a3}} {
+    \includegraphics[width=0.4\textwidth]{labelA3}
+}
+\subcaptionbox{$A_4$区域示例\label{fig:label-a4}}{
+    \includegraphics[width=0.4\textwidth]{labelA4}
+}
+\vspace{0.8ex}
+\\
+\caption{不同类型噪音区域标注示例\label{fig:noise-labels}}
+\end{figure}
+
+如图~\ref{fig:noise-labels}展示了几种不同特征标注出的噪音区域的示例，图中蓝色部分为算法标注成噪音区域的部分。
+
+对不同特征标注出的噪音区域取并集，作为完整的噪音区域，标注后的语谱图定义为公式~\ref{eq:label_tf}
 \begin{equation}\label{eq:label_tf}
 G_i^*(m, n) = \left\{
     \begin{array}{rcl}
@@ -90,12 +113,12 @@ G_i^*(m, n) = \left\{
     \end{array} \right.
 \end{equation}
 
-定义集合
+定义集合$\Psi(m,n)$如公式~\ref{eq:collection}
 \begin{equation}\label{eq:collection}
 \Psi(m,n)={i|G_i*(m,n)=2}
 \end{equation}
 
-定义语音分辨率
+定义语音分辨率$D(m,n)$如公式~\ref{eq:resolution}
 \begin{equation}\label{eq:resolution}
 D(m,n) =  \left\{
     \begin{array}{rcl}
@@ -104,12 +127,13 @@ D(m,n) =  \left\{
     \end{array} \right.
 \end{equation}
 
-对语音分辨率取平均得到客观评价分数
+对语音分辨率求平均得到客观评价分数$S_1$如公式~\ref{eq:score}
 \begin{equation}\label{eq:score}
 S_1 = \frac{\sum D(m,n)}{\sum G_1(m,n)}
 \end{equation}
 
-为保证阈值化语谱图包含有效信息，阈值参数的取值范围应该是。一种简单的选取方法是直接在到选取$N$等分点。
+为保证阈值化语谱图包含有效信息，阈值参数的取值范围应该是$(\min{G(m,n)}, \max{G(m,n})$。一种简单的选取方法是直接在$\min{G(m,n)}$到$\max{G(m,n)}$之间选取$N$等分点。
+
 为了尽量细致地刻画语谱图的特征，阈值的选取应该尽量密集，但同时算法的时间复杂度正比于阈值的数量，密集的阈值也会导致更高的计算复杂度。所以阈值的选取应当使用尽量少的阈值尽量高效地刻画语谱图的特征，上述选取方法显然不够高效。一方面，阈值很接近$\min{G(m,n)}$或者$\max{G(m,n)}$时，阈值化语谱图上的点非常少或者非常多，能提供的信息量很少。另一方面因为阈值增加同样大小，阈值化语谱图上的点数增加可能差异很大。均匀地选取阈值，会导致在有些区间，连续的几张阈值化语谱图过于相像而浪费计算资源，有些区间，阈值化语谱图又变化太快导致刻画不够细致。
 
 一种改进的动态选取阈值的方法如下：先在5\%至20\%之间均匀选定一系列比例$\alpha_1,\alpha_2,\alpha_3,...,\alpha_N$，再计算得出对应的阈值$t_1,t_2,t_3,...,t_N$使得$\sum G_i(m,n)=\alpha_i M^2$。实验验证此种阈值选取方法要比前述方法效果提升很多。
@@ -147,6 +171,7 @@ H_k(n) = \left\{
 \subsection{自编码器结构}
 
 由于语音存在一定的结构特征，所以语音频谱中存在冗余信息，可以通过更少的信息来表示。人工神经网络构建的自编码器（Autoencoder），可以用来提取高维向量中的结构化特征，将其压缩到较低维空间表示。
+
 对8kHz的短波语音使用32ms的窗长加汉明窗，以16ms的长度移动汉明窗，使用40个梅尔频谱滤波器，生成梅尔频谱语谱图。取连续7帧语音的语谱图，拼接成自编码器的输入向量，向量长度为7*40 = 280。自编码器的隐藏层大小设置为80，网络结构如图~\ref{fig:autoencoder}所示。
 
 \begin{figure}
@@ -155,7 +180,7 @@ H_k(n) = \left\{
 \caption{自编码器网络结构\label{fig:autoencoder}}
 \end{figure}
 
-自编码器网络使用tensorflow\cite{abadi2016tensorflow}实现，隐藏层激活函数使用softplus函数$\sigma(x)=ln⁡(e^x+1)$，使用质量非常高、基本未受到干扰或者噪音污染的短波语音训练自编码器，使其学习短波语音的语谱结构特征。使用总计时长约5小时的清晰短波语音进行训练，每个训练样本的语音时长为16*8=128ms，故总计样本数量为14万左右。训练的batch大小设置为256，初始学习速率0.001。
+自编码器网络使用Tensorflow\cite{abadi2016tensorflow}实现，隐藏层激活函数使用softplus函数$\sigma(x)=ln⁡(e^x+1)$，使用质量非常高、基本未受到干扰或者噪音污染的短波语音训练自编码器，使其学习短波语音的语谱结构特征。使用总计时长约5小时的清晰短波语音进行训练，每个训练样本的语音时长为16*8=128ms，故总计样本数量为14万左右。训练的batch大小设置为256，初始学习速率0.001。
 
 
 \begin{figure}
@@ -163,7 +188,7 @@ H_k(n) = \left\{
   \centering
   \includegraphics[width=1\textwidth]{ae-pure1}
   \caption{自编码器输入输出语谱图（清晰语音）\label{fig:ae-pure1}}
-\end{minipage}\hfill
+\end{minipage}
 \begin{minipage}{0.35\textwidth}
   \centering
   \includegraphics[width=1\textwidth]{ae-sys}
@@ -192,6 +217,8 @@ H_k(n) = \left\{
 \subcaptionbox{高质量语音\label{fig:ae-high}} {
     \includegraphics[width=0.45\textwidth]{ae-high}
 }
+\vspace{0.8ex}
+\\
 \caption{不同质量语音经过自编码器时语谱图的变化\label{fig:ae-diffs}}
 \end{figure}
 

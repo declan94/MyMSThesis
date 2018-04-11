@@ -27,6 +27,8 @@
 \subcaptionbox{基于自编码器的算法\label{fig:regress2}}{
     \includegraphics[width=0.45\textwidth]{regress}
 }
+\vspace{0.8ex}
+\\
 \caption{客观评分结果和平均主观意见分的线性回归\label{fig:regress}}
 \end{figure}
 
@@ -58,20 +60,20 @@ ANIQUE+ & 0.43 & 1.08 & 0.71 \\
 
 \section{实验B结果}
 
-实验B共进行了20组，每组时长1分钟。如图~\ref{fig:switching-result}所示为两组实验的波形结果，每组实验采集了6路语音信号，其中红色部分表示自动选路的结果。
+实验B共进行了20组，每组时长1分钟。如图~\ref{fig:switching-result}所示为两组实验的波形结果，每组实验采集了6路语音信号，其中红色部分表示自动选路的结果，从图中可以看出，自动选路的结果避开了各路信号中噪音很大，波形很乱的时间段，说明自动选路发挥了正常的作用。
 
 \begin{figure}
 \centering
-\includegraphics[width=0.45\textwidth]{switching-result1}
-\includegraphics[width=0.45\textwidth]{switching-result2}
-\caption{实验B结果波形\label{fig:switching-result}}
+\includegraphics[width=0.8\textwidth]{switching-result1}
+\includegraphics[width=0.8\textwidth]{switching-result2}
+\caption{实验B输出结果波形\label{fig:switching-result}}
 \end{figure}
 
 \begin{figure}
 \centering
 \includegraphics[width=0.45\textwidth]{switching-scores1}
 \includegraphics[width=0.45\textwidth]{switching-scores2}
-\caption{实验B结果波形\label{fig:switching-scores}}
+\caption{实验B输出的评分结果\label{fig:switching-scores}}
 \end{figure}
 
 对每一组实验结果，我们试听了选路输出的语音和每一路原始语音，比较其主观感受质量。选路输出的语音质量整体要优于各路原始语音信号。我们也试用了客观评分算法对合路语音以及各路语音分时间段进行了客观质量评分，结果如图~\ref{fig:switching-scores}所示。其中红色折线为对选路输出的语音进行评分的结果，而蓝色折线则为各路原始语音的评分结果，从算法客观评分结果来看选路输出的语音质量也是整体最优的。

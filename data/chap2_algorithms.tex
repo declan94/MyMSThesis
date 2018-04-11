@@ -30,7 +30,9 @@ $F_{STFT}(m, n)$反映的是$mT$时刻，$nF$频率附近的局部频谱信息�
 G(m, n) = log(|F_{STFT}(m, n)|^2)
 \end{equation}
 
-语谱图反映了语音信号在不同时间、不同频率上的能量大小，承载了语音所包含的信息。高质量语音的语谱图上有着清晰的结构特征，包括基音部分的能带，各种高次谐波的能带；而带有噪音的语谱图则没有模糊不清。在短波语音信号上亦是如此。如图~\ref{fig:timefreq}所示，从左到右是质量由低到高五组短波语音的语谱图，分别对应主观评分1-5分。从语谱图上可以看到条带状的语音部分越来越突出和明显。图~\ref{fig:timefreq-thr0.3}是由图~\ref{fig:timefreq}中各个语谱图以0.3为阈值转化为二值图像的结果，图中可以更加明显的看出质量越好的语音信号，条带状的纯净语音部分越清楚，而质量较差的语音信号，则因为存在噪音连成模糊的一片。
+语谱图反映了语音信号在不同时间、不同频率上的能量大小，承载了语音所包含的信息。高质量语音的语谱图上有着清晰的结构特征，包括基音部分的能带，各种高次谐波的能带；而带有噪音的语谱图则没有模糊不清。在短波语音信号上亦是如此。如图~\ref{fig:timefreq}所示，从左到右是质量由低到高五组短波语音的语谱图，分别对应主观评分1-5分。从语谱图上可以看到条带状的语音部分越来越突出和明显。
+
+图~\ref{fig:timefreq-thr0.3}是由图~\ref{fig:timefreq}中各个语谱图以0.3为阈值转化为二值图像的结果，图中可以更加明显的看出质量越好的语音信号，条带状的纯净语音部分越清楚，而质量较差的语音信号，则因为存在噪音连成模糊的一片。之所以将图像做二值化处理，是因为对于连续图像，可以应用的图像处理算法比较有限。而将图像二值化处理在计算机视觉中是非常常见的一种处理方式，而且人在听带有噪音的语音时，其实正是需要大脑主动去抑制一定能量以下的信号，从而分辨出噪音中的语音部分，和图像的二值化思想不谋而合。
 
 \begin{figure}
 \centering
@@ -50,7 +52,26 @@ G(m, n) = log(|F_{STFT}(m, n)|^2)
 \caption{不同阈值的二值化语谱图\label{fig:timefreq-thrs-label}}
 \end{figure}
 
-进一步地，从中选出一个语音信号，分别以0.2, 0.4, 0.6, 0.8为阈值绘制其二值化语谱图，如图~\ref{fig:timefreq-thrs-label}所示。而图中绿色区域是程序通过建立噪音模型，使用一些特征标注出的被噪音干扰的区域。可以发现，在阈值较低时，因为噪音部分留在了图上，所以看上去是大片大片的噪音；而当阈值逐渐升高，噪音部分逐渐从图上消失，留下的就都是纯净的语音信号。若当阈值超过某一阈值t时，语谱图上某一点不再被噪音干扰，那么这一点实际能量比t高出的部分就表征了这一点语音信号相对于噪音部分高出的强度。本文称之为该点的语音分辨率，计算语谱图上所有点的语音分辨率，进而得出语音质量的客观评价分。
+但是二值化的过程丢失了大量的信息，为了弥补信息的损失，我们对同一幅语谱图使用一系列的阈值生成很多福二值化的图像。例如，从图~\ref{fig:timefreq}中的几个信号中选出一个语音信号，分别以0.2, 0.4, 0.6, 0.8为阈值绘制其二值化语谱图，如图~\ref{fig:timefreq-thrs-label}所示。实际算法中使用的阈值不止4个，而是根据语谱图进行动态调节，之后会详细说明，这里仅是作图示意。
+
+图~\ref{fig:timefreq-thrs-label}中绿色区域是程序通过建立噪音模型，使用一些特征标注出的被噪音干扰的区域。可以发现，在阈值较低时，因为噪音部分留在了图上，所以看上去是大片大片的噪音；而当阈值逐渐升高，噪音部分逐渐从图上消失，留下的就都是纯净的语音信号。接下来用图示更详细地解释：如图~\ref{fig:dynamic-thr}所示，图中左边使用三维图像示意连续的语谱图，假设中间凸起部分为语音信号，图中看出其受到了高斯白噪音干扰。当二值化采用的阈值较低时，如图~\ref{fig:dynamic-thr-low}所示，生成的二值化语谱图中，语音信号淹没在了高斯白噪音中，所以会被一起标注成噪音区域。而当阈值逐渐升高，超过噪音的能量时，如图~\ref{fig:dynamic-thr-high}所示，生成的二值化语谱图中只剩下语音部分，故不会被标注为噪音。
+
+根据上述分析，若当阈值超过某一阈值t时，语谱图上某一点不再被噪音干扰，那么t就表征了改点附近的噪音能量。这一点实际能量比t高出的部分就表征了这一点语音信号相对于噪音部分高出的强度。本文称之为该点的语音分辨率，计算语谱图上所有点的语音分辨率，进而得出语音质量的客观评价分。
+
+\begin{figure}
+\centering
+\subcaptionbox{较低阈值\label{fig:dynamic-thr-low}} {
+    \includegraphics[width=0.8\textwidth]{dynamic_thr_low}
+}
+\vspace{0.8ex}
+\\
+\subcaptionbox{较高阈值\label{fig:dynamic-thr-high}}{
+    \includegraphics[width=0.8\textwidth]{dynamic_thr_high}
+}
+\vspace{0.8ex}
+\\
+\caption{阈值逐渐升高时二值化语谱图变化示意\label{fig:dynamic-thr}}
+\end{figure}
 
 \subsection{算法流程}
 
@@ -209,15 +230,17 @@ H_k(n) = \left\{
 \begin{figure}
 \centering
 \subcaptionbox{低质量语音\label{fig:ae-low}} {
-    \includegraphics[width=0.45\textwidth]{ae-low}
+    \includegraphics[width=0.8\textwidth]{ae-low}
 }
+\vspace{0.8ex}
+\\
 \subcaptionbox{中等质量语音\label{fig:ae-mid}}{
-    \includegraphics[width=0.45\textwidth]{ae-mid}
+    \includegraphics[width=0.8\textwidth]{ae-mid}
 }
 \vspace{0.8ex}
 \\
 \subcaptionbox{高质量语音\label{fig:ae-high}} {
-    \includegraphics[width=0.45\textwidth]{ae-high}
+    \includegraphics[width=0.8\textwidth]{ae-high}
 }
 \vspace{0.8ex}
 \\
@@ -232,7 +255,7 @@ D = \max\limits_{q \in Q}\left(\sum_{m, k} (M_{in}(m,k) > P_{in}(q)) \bigoplus (
 
 其中$Q={70,72,74,76,78,80,82,84,86}$，$M_{in}$和$M_{out}$分别为输入输出的梅尔语谱图，$P_{in}$和$P_{out}$分别为输入输出语谱图的百分位函数，例如$P_{in}(70)$表示输入语谱图的70th百分位数。
 
-基于此差异函数即可进一步给出短波语音的客观评分$S_2$如公式~\ref{eq:s2}。
+基于此差异函数即可进一步给出短波语音的客观评分$S_2$如公式~\ref{eq:s2}。由于$0 \leq D \leq 40M$，所以给出的分数在$[0, 1]$范围。
 
 \begin{equation}\label{eq:s2}
 S_2 = \frac{40M - D}{40M}

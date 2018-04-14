@@ -26,11 +26,15 @@
 \begin{figure}
 \centering
 \subcaptionbox{排序结果\label{fig:web-sort}}{
-    \includegraphics[width=0.45\textwidth]{web-sort}
+    \includegraphics[width=0.8\textwidth]{web-sort}
 }
+\vspace{1.2ex}
+\\
 \subcaptionbox{MOS分结果\label{fig:web-mos}}{
-    \includegraphics[width=0.45\textwidth]{web-mos}
+    \includegraphics[width=0.8\textwidth]{web-mos}
 }
+\vspace{0.8ex}
+\\
 \caption{在线辅助系统的队列结果界面\label{fig:web-result}}
 \end{figure}
 
@@ -49,11 +53,15 @@
 \begin{figure}
 \centering
 \subcaptionbox{排序任务\label{fig:web-user-sort}}{
-    \includegraphics[width=0.45\textwidth]{web-user-sort}
+    \includegraphics[width=0.8\textwidth]{web-user-sort}
 }
+\vspace{1.2ex}
+\\
 \subcaptionbox{MOS分任务\label{fig:web-user-mos}}{
-    \includegraphics[width=0.45\textwidth]{web-user-mos}
+    \includegraphics[width=0.8\textwidth]{web-user-mos}
 }
+\vspace{0.8ex}
+\\
 \caption{在线辅助系统的志愿者界面\label{fig:web-user}}
 \end{figure}
 
@@ -69,7 +77,7 @@
     \item 数据库：MySQL 5.5
 \end{itemize}
 
-系统后端使用Java的Spring框架和Jersey框架实现符合Restful设计理念的API接口，前端使用AngularJs实现单页web应用，符合MVC设计模型，将系统的数据层、逻辑层和表示层完全剥离解耦\cite{burbeck87}。数据库部分使用MySQL数据库存储，包括账户信息数据表、语音队列数据表、语音数据表、语音比较问题表、语音主观评分表，分别如表~\ref{tab:user}\~~\ref{tab:score}所示。
+系统后端使用Java的Spring框架和Jersey框架实现符合Restful~\cite{fielding2000rest}设计理念的API接口，前端使用AngularJs实现单页web应用，符合MVC~\cite{leff2001web}设计模型，将系统的数据层、逻辑层和表示层完全剥离解耦~\cite{burbeck87}。数据库部分使用MySQL数据库存储，包括账户信息数据表、语音队列数据表、语音数据表、语音比较问题表、语音主观评分表，分别如表~\ref{tab:user}\~~\ref{tab:score}所示。
 
 \begin{table}
 \centering

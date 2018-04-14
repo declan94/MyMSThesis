@@ -43,7 +43,7 @@
 
 从而当$\delta=\delta_1-\delta_2$时$C_{12}(\delta)$取得极大值，即：
 \begin{equation}
-\delta1 - \delta2 = \arg \max C_{12}(\delta)
+\delta_1 - \delta_2 = \arg \max C_{12}(\delta)
 \end{equation}
 记$\delta_{12}=\delta_1-\delta_2$，为$y_1 (t)$相对于$y_2 (t)$的延迟大小，$\delta_{12}>0$表明$y_1(t)$落后于$y_2(t)$，$\delta_{12}<0$表明$y_1(t)$超前于$y_2(t)$。
 通过$C_{12}(\delta)$极值点估计出$\delta_{12}$之后，即可通过截取平移获得对齐的两路语音信号$y_1^*(t)$和$y_2^*(t)$：
@@ -66,7 +66,7 @@
     \end{array}
 % \right.
 \end{equation}
-上述对于相对延时$δ_{12}$的估计受到以下几方面影响会存在一定误差：
+上述对于相对延时$\delta_{12}$的估计受到以下几方面影响会存在一定误差：
 \begin{enumerate}
 \item 噪音污染可能不是理想白噪音，当噪音污染程度较大，即信噪比较低时会导致估计误差较大。
 \item 两路语音相对延时可能较大，当延迟大小接近$T$的数量级时，截取的信号重叠部分较小，会导致估计误差较大。
@@ -77,7 +77,7 @@
 
 在两路语音对齐算法的基础上，本节介绍一种实现多路语音时间对齐的算法。多路语音的时间对齐主要需要解决上小节算法给出的两两之间的相对延时可能存在不一致的问题，本文将该问题建模成图论问题，使用最小生成树算法进行优化选择，详述如下。
 
-设收到有$K$路语音$(K\geq3$)，分别为$y_1(t), y_2(t), ..., y_K(t)$，设指标集$I={i│i\in N^+, i\leq K}$。首先使用~\ref{section:align2}节的方法我们可以估计出多路语音两两之间的相对延时$\delta_{ij}  (i,j\in I,i\neq j)$。
+设收到有$K$路语音$(K\geq3$)，分别为$y_1(t), y_2(t), ..., y_K(t)$，设指标集$I=\left\{i|i\in N^+, i\leq K\right\}$。首先使用~\ref{section:align2}节的方法我们可以估计出多路语音两两之间的相对延时$\delta_{ij}  (i,j\in I,i\neq j)$。
 
 假设我们的估计不存在误差，且定义$\delta_{ii}=0,(i \in I)$，则
 \begin{equation}\label{eq:delay-relations}
@@ -217,6 +217,7 @@ Gain_i = \sqrt{\frac {K\bar{P_i}} {\sum_{k \in I}{\bar{P_k}}} }
 \bar{S_j} - \bar{S_i} > T_{switch}
 \end{array}
 \end{equation}
+
 在发生切换时，切换模块自动完成线性平滑过度，设定切换时长为$\Delta$，则切换阶段输出语音可表示为：
 \begin{equation}
 y_{out}(t) = \frac{ty_j(t)+(\Delta-t)y_i(t)}{\Delta}

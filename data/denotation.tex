@@ -5,26 +5,22 @@
 %%% End:
 
 \begin{denotation}[3cm]
-\item[$I$]  视频中的图像帧
-\item[$param_1$]  Hough圆检测的Canny算子阈值参数
-\item[$param_2$]  Hough圆检测的累加器阈值参数
-\item[$A$]  图像坐标系向理想坐标系的变换矩阵
-\item[$B$]  理想坐标系向图像坐标系的变换矩阵
-\item[$\textrm{M}_1$] 简单单高斯背景模型
-\item[$\textrm{M}_2$] 果蝇活动台的精确背景模型
-\item[$\mu$]    背景模型$\textrm{M}_1$中视频帧的均值
-\item[$\sigma^2$]   背景模型$\textrm{M}_1$中视频帧的方差
-\item[$\alpha$] $\textrm{M}_1$中视频帧的亮度畸变
-\item[$\textrm{RMS}(\alpha)$] $\textrm{M}_1$中视频亮度畸变的均方差
-\item[$\mu'$]   背景模型$\textrm{M}_2$中活动台的均值
-\item[$\sigma^{\prime 2}$] 背景模型$\textrm{M}_2$中活动台的方差
-\item[$\alpha'$] $\textrm{M}_2$中视频帧的亮度畸变
-\item[$\textrm{RMS}(\alpha')$] $\textrm{M}_2$中视频亮度畸变的均方差
-\item[$I_{body}$]    果蝇身体的二值图像
-\item[$I_{wing}$]    果蝇翅膀的二值图像
-\item[$\tau_{body}$] 提取果蝇身体的阈值
-\item[$\tau_{wing}$] 提取果蝇翅膀的阈值
-\item[$a$]    视频中的果蝇身体长度的一半
-\item[$b$]    视频中的果蝇身体宽度的一半
-\item[$\vec{\bm p}$]    果蝇特征点坐标
+\item[$G(m,n)$]  连续值语谱图
+\item[$G_i(m,n)$]  使用第$i$个阈值生成的二值化语谱图
+\item[$G_i^*(m,n)$]  使用噪音模型标注后的二值化语谱图
+\item[$M$]  短时傅里叶变换的窗长
+\item[$Psi(m,n)$]  使得语谱图中对应位置不被判定为噪音的阈值下标集合
+\item[$D(m,n)$]  语谱图噪音模型算法定义的语音分辨率
+\item[$S_1$] 语谱图噪音模型算法给出的客观质量评分
+\item[$\Delta$] 自编码器输入输出语谱图的差异函数
+\item[$S_2$]    自编码器算法给出的客观质量评分
+\item[$M(m,k)$]   梅尔频谱语谱图
+\item[$x_i(t)$] 第$i$路短波语音信号的原始信号
+\item[$e_i(t)$] 第$i$路短波语音信号收到的噪音干扰
+\item[$y_i(t)$] 接收到的第$i$路短波语音信号
+\item[$y_i^*(t)$] 时间对齐后的第$i$路短波语音信号
+\item[$C_{ij}(\delta)$] 第$i$路信号和第$j$路信号的互相关函数
+\item[$\delta_i$] 第$i$路信号的延时
+\item[$\delta_{ij}$]  第$i$路信号相对低$j$类信号的延时
+\item[$I$] 多路信号的下标集合
 \end{denotation}

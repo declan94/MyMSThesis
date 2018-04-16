@@ -66,11 +66,29 @@
     \end{array}
 % \right.
 \end{equation}
+
 上述对于相对延时$\delta_{12}$的估计受到以下几方面影响会存在一定误差：
+
 \begin{enumerate}
 \item 噪音污染可能不是理想白噪音，当噪音污染程度较大，即信噪比较低时会导致估计误差较大。
 \item 两路语音相对延时可能较大，当延迟大小接近$T$的数量级时，截取的信号重叠部分较小，会导致估计误差较大。
 \end{enumerate}
+
+为考量这两方面因素对结果的影响，我们进行了一些测试。我们选择一段时长大约为2小时的纯净短波语音作为测试的原始语料，将其人为加上10ms的延时偏移形成两路时间不对齐的语音信号，再分别加上不同噪音等级的高斯白噪声，从而生成测试语音。随后我们在不同信噪比、不同的$T/\delta$取值情况下，随机选择1000组语音对，使用上述时间对齐算法进行对齐，统计结果的准确性。
+
+\begin{equation}\label{eq:delay-precision}
+Precision=\frac{|\delta_{before}|-|\delta_{after}|}{|\delta_{before}|}
+\end{equation}
+
+对齐结果的准确性定义为公式~\ref{eq:delay-precision}，其中$\delta_{before}$和$\delta_{after}$分别为使用对齐算法之前和之后，语音的相对延时。根据该定义，$Precision$越接近$1$，代表对齐的结果越好。
+
+\begin{figure}
+\centering
+\includegraphics[width=0.8\textwidth]{test-align}
+\caption{两路对齐算法测试结果\label{fig:test-align}}
+\end{figure}
+
+我们测试了信噪比为$-13dB$到$0dB$，$T/\delta$从0到50的情况，结果如图~\ref{fig:test-align}所示。图中可以看出，当信噪比低于$-12dB$时，对齐算法已经很难将语音完全对齐，这在本节开始时进行过讨论，因为信噪比过低，接收信号中的语音已经难以听清，自然难以实现时间对齐。而对齐的准确性随着$T/\delta$的增大而逐渐提高，在信噪比大于$-10dB$的情况下，$T/\delta$取到25以上就可以基本保证对齐的准确率在90\%以上，故可将$T/\delta$取为25。实际操作中，须首先估计或者测试原始相对延时$\delta$的大小，然后设定系统的$T$值大小。
 
 
 \section{多路语音时间对齐} \label{section:align-multi}

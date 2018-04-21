@@ -98,6 +98,7 @@ Precision=\frac{|\delta_{before}|-|\delta_{after}|}{|\delta_{before}|}
 设收到有$K$路语音$(K\geq3$)，分别为$y_1(t), y_2(t), ..., y_K(t)$，设指标集$I=\left\{i|i\in N^+, i\leq K\right\}$。首先使用~\ref{section:align2}节的方法我们可以估计出多路语音两两之间的相对延时$\delta_{ij}  (i,j\in I,i\neq j)$。
 
 假设我们的估计不存在误差，且定义$\delta_{ii}=0,(i \in I)$，则
+
 \begin{equation}\label{eq:delay-relations}
 \delta_{ij}=\delta_{ik}+\delta_{jk}, \forall i,j,k \in I
 \end{equation}
@@ -139,7 +140,7 @@ w(i,j)=\max⁡ \left\{ C_{ij}(\delta) \right\}
 \end{algorithmic}
 \end{algorithm}
 
-得到最大生成树后，生成树上对应的边即代表应该选取的相对延迟估计，在这$K-1$个相对延迟的基础上，利用式x.x.x即可求出各路信号相对$y_1 (t)$的延迟$\delta_{i1},(i \in I)$，其中$\delta_{11}=0$。随后对各路信号进行对齐和平移，得到时间对齐后的信号：
+得到最大生成树后，生成树上对应的边即代表应该选取的相对延迟估计，在这$K-1$个相对延迟的基础上，利用式~\ref{eq:delay-relations}即可求出各路信号相对$y_1 (t)$的延迟$\delta_{i1},(i \in I)$，其中$\delta_{11}=0$。随后对各路信号进行对齐和平移，得到时间对齐后的信号：
 \begin{equation}
 y_i^* (t)=y_i (t+\delta_{i1}-\min_{j\in I}\delta_{j1})
 \end{equation}

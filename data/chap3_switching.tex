@@ -120,7 +120,7 @@ w(i,j)=\max⁡ \left\{ C_{ij}(\delta) \right\}
 
 问题即转化成求解图$G$的最大生成树，最大生成树和最小生成树可互相转化，直接对所有边权重求相反数即可。最小生成树是图论中非常经典的一个问题，有诸多相关的算法研究~\cite{bazlamaccci2001minimum}。
 
-求解最小生成树问题的经典算法有Boruvka算法、Prim算法和Kruskal算法等。Boruvka算法是最古老的最小生成树算法，时间复杂度为$O(|E|log|V|)$；Prim算法和Kruskal算法是最常用和广为人知的两种最小生成树算法，时间复杂度分别为$O(|E|+|V|log|V|)$和$O(|E|log|E|)$。Yao~\cite{yao19750}在Boruvka算法基础上改进提出了一种更快速的算法，时间复杂度为$O(|E|loglog|V|)$。而Karger等人~\cite{karger1995randomized}提出的线性时间算法是目前最快的最小生成树算法。我们使用经典的Prim算法，如算法~\ref{alg:prim}所示。
+求解最小生成树问题的经典算法有Boruvka算法、Prim算法和Kruskal算法等。Boruvka算法是最古老的最小生成树算法，时间复杂度为$O(|E|log|V|)$；Prim算法和Kruskal算法是最常用的，也是最广为人知的两种最小生成树算法，时间复杂度分别为$O(|E|+|V|log|V|)$和$O(|E|log|E|)$。Yao~\cite{yao19750}在Boruvka算法基础上改进提出了一种更快速的算法，时间复杂度为$O(|E|loglog|V|)$。而Karger等人~\cite{karger1995randomized}提出的线性时间算法是目前最快的最小生成树算法。我们使用经典的Prim算法，如算法~\ref{alg:prim}所示。
 
 \begin{algorithm}
     \caption{求解最小生成树的Prim算法}

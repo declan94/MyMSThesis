@@ -122,7 +122,9 @@ w(i,j)=\max⁡ \left\{ C_{ij}(\delta) \right\}
 
 问题即转化成求解图$G$的最大生成树，最大生成树和最小生成树可互相转化，直接对所有边权重求相反数即可。最小生成树是图论中非常经典的一个问题，有诸多相关的算法研究~\cite{bazlamaccci2001minimum}。
 
-求解最小生成树问题的经典算法有Boruvka算法、Prim算法和Kruskal算法等。Boruvka算法是最古老的最小生成树算法，时间复杂度为$O(|E|log|V|)$；Prim算法和Kruskal算法是最常用的，也是最广为人知的两种最小生成树算法，时间复杂度分别为$O(|E|+|V|log|V|)$和$O(|E|log|E|)$。Yao~\cite{yao19750}在Boruvka算法基础上改进提出了一种更快速的算法，时间复杂度为$O(|E|loglog|V|)$。而Karger等人~\cite{karger1995randomized}提出的线性时间算法是目前最快的最小生成树算法。我们使用经典的Prim算法，如算法~\ref{alg:prim}所示。
+求解最小生成树问题的经典算法有Boruvka算法、Prim算法和Kruskal算法等。Boruvka算法是最古老的最小生成树算法，时间复杂度为$O(|E|log|V|)$；Prim算法和Kruskal算法是最常用的，也是最广为人知的两种最小生成树算法，时间复杂度分别为$O(|E|+|V|log|V|)$和$O(|E|log|E|)$。Yao~\cite{yao19750}在Boruvka算法基础上改进提出了一种更快速的算法，时间复杂度为$O(|E|loglog|V|)$。而Karger等人~\cite{karger1995randomized}提出的线性时间算法是目前最快的最小生成树算法。
+
+由于短波语音的通路数量不会太多，一般为个位数，也即图的顶点数较少。而图中任意两点之间都有边，为全连通图，边密集程度很高。从实现复杂度上来讲经典的Prim算法和Kruskal算法都较为简单，对于顶点数较少而边密集的情况Prim算法的计算时间复杂度更低。所以综合考虑之后，我们使用经典的Prim算法，实现简单同时能够满足算法时间复杂度要求，具体算法流程如算法~\ref{alg:prim}所示。
 
 \begin{algorithm}
     \caption{求解最小生成树的Prim算法}
@@ -141,7 +143,7 @@ w(i,j)=\max⁡ \left\{ C_{ij}(\delta) \right\}
 \end{algorithmic}
 \end{algorithm}
 
-得到最大生成树后，生成树上对应的边即代表应该选取的相对延迟估计，在这$K-1$个相对延迟的基础上，利用式~\ref{eq:delay-relations}即可求出各路信号相对$y_1 (t)$的延迟$\delta_{i1},(i \in I)$，其中$\delta_{11}=0$。随后对各路信号进行对齐和平移，得到时间对齐后的信号如公式~\ref{eq:align-formula}所示。
+求得到最小生成树后，生成树上对应的边即代表应该选取的相对延迟，在这$K-1$个相对延迟的基础上，利用式~\ref{eq:delay-relations}即可求出各路信号相对$y_1 (t)$的延迟$\delta_{i1},(i \in I)$，其中$\delta_{11}=0$。随后对各路信号进行对齐和平移，得到时间对齐后的信号如公式~\ref{eq:align-formula}所示。
 
 \begin{equation}\label{eq:align-formula}
 y_i^* (t)=y_i (t+\delta_{i1}-\min_{j\in I}\delta_{j1})
@@ -272,9 +274,9 @@ Gain_i = \sqrt{\frac {K\bar{P_i}} {\sum_{k \in I}{\bar{P_k}}} }
 \end{array}
 \end{equation}
 
-在发生切换时，切换模块自动完成线性平滑过度，设定切换时长为$\Delta$，则切换阶段输出语音可表示为：
+在发生切换时，切换模块自动完成线性平滑过度，设定切换时长为$\Delta T$，则切换阶段输出语音可表示为：
 \begin{equation}
-y_{out}(t) = \frac{ty_j(t)+(\Delta-t)y_i(t)}{\Delta}
+y_{out}(t) = \frac{ty_j(t)+(\Delta T-t)y_i(t)}{\Delta T}
 \end{equation}
 
 \section{小结}

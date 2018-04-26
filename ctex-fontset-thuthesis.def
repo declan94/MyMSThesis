@@ -2,15 +2,15 @@
 
 \ProvidesFile{ctex-fontset-thuthesis.def}
 
-\setCJKmainfont[BoldFont={Heiti SC},ItalicFont={Kaiti SC}]{Songti SC}
+\setCJKmainfont[BoldFont={Heiti SC},ItalicFont={KaiTi}]{Songti SC}
 \setCJKsansfont{Heiti SC}
-\setCJKmonofont{Kaiti SC}
+\setCJKmonofont{KaiTi}
 \setCJKfamilyfont{zhsong}{Songti SC}
 \setCJKfamilyfont{zhhei}{Heiti SC}
-\setCJKfamilyfont{zhkai}{Kaiti SC}
-\setCJKfamilyfont{zhfs}{STFangsong}
-\setCJKfamilyfont{zhli}{LiSong Pro}
-\setCJKfamilyfont{zhyou}{Yuanti SC}
+\setCJKfamilyfont{zhkai}{KaiTi}
+\setCJKfamilyfont{zhfs}{FangSong}
+\setCJKfamilyfont{zhli}{STLiti}
+\setCJKfamilyfont{zhyou}{Songti SC}
 
 \newcommand*{\songti}{\CJKfamily{zhsong}}
 \newcommand*{\heiti}{\CJKfamily{zhhei}}

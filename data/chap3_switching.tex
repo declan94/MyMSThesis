@@ -101,7 +101,7 @@ Precision=\frac{|\delta_{before}|-|\delta_{after}|}{|\delta_{before}|}
 假设我们的估计不存在误差，且定义$\delta_{ii}=0,(i \in I)$，则
 
 \begin{equation}\label{eq:delay-relations}
-\delta_{ij}=\delta_{ik}+\delta_{jk}, \forall i,j,k \in I
+\delta_{ij}=\delta_{ik}-\delta_{jk}, \forall i,j,k \in I
 \end{equation}
 
 但是由于噪音的存在，延时的估计可能存在误差，所以两两之间的相对延时会存在不一致的情况，即公式~\ref{eq:delay-relations}并不恒成立。因而就需要从所有$K(K+1)/2$个相对延时中选取$K-1$个以确定一个统一的一致的，各路语音的相对延时。
@@ -143,7 +143,7 @@ w(i,j)=\max⁡ \left\{ C_{ij}(\delta) \right\}
 \end{algorithmic}
 \end{algorithm}
 
-求得到最小生成树后，生成树上对应的边即代表应该选取的相对延迟，在这$K-1$个相对延迟的基础上，利用式~\ref{eq:delay-relations}即可求出各路信号相对$y_1 (t)$的延迟$\delta_{i1},(i \in I)$，其中$\delta_{11}=0$。随后对各路信号进行对齐和平移，得到时间对齐后的信号如公式~\ref{eq:align-formula}所示。
+求得最小生成树后，生成树上对应的边即代表应该选取的相对延迟，在这$K-1$个相对延迟的基础上，利用式~\ref{eq:delay-relations}即可求出各路信号相对$y_1 (t)$的延迟$\delta_{i1},(i \in I)$，其中$\delta_{11}=0$。随后对各路信号进行对齐和平移，得到时间对齐后的信号如公式~\ref{eq:align-formula}所示。
 
 \begin{equation}\label{eq:align-formula}
 y_i^* (t)=y_i (t+\delta_{i1}-\min_{j\in I}\delta_{j1})
